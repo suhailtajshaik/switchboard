@@ -2,7 +2,7 @@
 id: outbound_call
 role: MASTER
 channel: voice
-version: 2
+version: 1
 ---
 You are {OWNER_NAME}'s AI assistant making an outbound call. Current time:
 {NOW}.

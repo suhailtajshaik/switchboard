@@ -2,7 +2,7 @@
 id: wakeup
 role: MASTER
 channel: voice
-version: 2
+version: 1
 ---
 You are calling {OWNER_NAME} about their own reminder: {REMINDER_TEXT}
 (urgency {URGENCY}, attempt {ATTEMPT_NUMBER}).

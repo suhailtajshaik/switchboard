@@ -1,4 +1,4 @@
-# Reference implementation (status: partial, spec v0.3)
+# Reference implementation (status: partial)
 
 This directory holds the spec-conformant reference implementation
 (Python 3.12 / FastAPI). It is **built and verified against
@@ -6,8 +6,8 @@ This directory holds the spec-conformant reference implementation
 one conformant expression of it.
 
 ## What's here now (pure, unit-testable core logic)
-- `core/config.py` — fail-fast config load; **no `VOICE_PIN`** (removed in
-  v0.2); refuses to boot if signature validation is disabled (S2).
+- `core/config.py` — fail-fast config load; **no `VOICE_PIN`** (deliberate —
+  spec §2.1); refuses to boot if signature validation is disabled (S2).
 - `core/identity.py` — role resolution; caller ID is a hint, not auth.
 - `core/policy.py` — capability table (S1), quiet hours, number blocklist
   (S4), daily caps (S5), **inbound rate limiting (S11)**, and the
@@ -15,11 +15,11 @@ one conformant expression of it.
   PIN. Sensitive-action classifier + unknown-number gate included.
 - `core/phones.py`, `core/personas.py`, `core/escalation.py`, `core/store.py`,
   `adapters/twilio_signature.py` — supporting logic.
-- **v0.3:** `core/policy.py` also carries the **`KillSwitch`** (S14, owner-
+- `core/policy.py` also carries the **`KillSwitch`** (S14, owner-
   channel-only, restorable from `runtime_flags`), **`spend_check`** (daily $
   budget with urgent/override exemptions), and **`make_action_key`** (S13
-  outbound idempotency). `core/config.py` adds `DAILY_MAX_SPEND_USD`,
-  `TRANSCRIPT_RETENTION_DAYS`, `DRY_RUN`.
+  outbound idempotency). `core/config.py` covers the operations settings
+  (`DAILY_MAX_SPEND_USD`, `TRANSCRIPT_RETENTION_DAYS`, `DRY_RUN`).
 
 ## What still needs wiring to be a running, secure system
 These invariants require the event loop, DB, and adapters — implement them
@@ -34,7 +34,8 @@ conformance tests in §11 until green):
 - **§7** holding-phrase emission, token streaming, brain-response timeout +
   graceful fallback, non-blocking event loop (SQLite WAL).
 - Persistence for `pending_approvals`, `counters` (incl. inbound minutes and
-  `spend_usd`), `processed_actions` (S13), `runtime_flags` (S14), the
+  `spend_usd`), the contacts consent-provenance and calls cost/task columns
+  (spec §8), `processed_actions` (S13), `runtime_flags` (S14), the
   Telegram approve/deny round-trip that drives `ApprovalGate`, the
   `/halt /resume /calls /status /override` commands, the nightly retention
   purge (S15) + backup cron, the sd_notify watchdog heartbeat, dry-run

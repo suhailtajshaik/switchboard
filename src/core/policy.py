@@ -1,4 +1,4 @@
-"""Policy engine — the only path to side-effecting tools (spec §2, §3, §5, v0.2).
+"""Policy engine — the only path to side-effecting tools (spec §2, §3, §5).
 
 Pure decision logic: time, counters and approval state are injected so
 everything is testable. The model is never the security boundary.
@@ -26,7 +26,7 @@ class Deny(str, Enum):
     DAILY_CAP = "daily_cap"
     NO_CONSENT = "no_consent"
     ROLE_FORBIDDEN = "role_forbidden"
-    APPROVAL_REQUIRED = "approval_required"            # S3 (was pin_required)
+    APPROVAL_REQUIRED = "approval_required"            # S3
     UNKNOWN_NUMBER_UNCONFIRMED = "unknown_number_unconfirmed"  # S3
     BLOCKED_NUMBER = "blocked_number"
     DAILY_SPEND_BUDGET = "daily_spend_budget"          # operations §2
@@ -185,10 +185,10 @@ def inbound_allowed(
 
 
 # --- Out-of-band approval store (S3) ---------------------------------------
-# Replaces the v0.1 spoken-PIN gate. A sensitive action requested over an
-# untrusted channel is parked here, an approval prompt is sent to the owner's
-# root-of-trust channel, and the action runs only when the owner approves
-# before expiry. No secret is ever spoken or transcribed.
+# A sensitive action requested over an untrusted channel is parked here, an
+# approval prompt is sent to the owner's root-of-trust channel, and the
+# action runs only when the owner approves before expiry. No secret is ever
+# spoken or transcribed.
 class ApprovalState(str, Enum):
     PENDING = "pending"
     APPROVED = "approved"

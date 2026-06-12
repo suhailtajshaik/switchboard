@@ -1,4 +1,4 @@
-# Security model & threat analysis (v0.2)
+# Security model & threat analysis
 
 Switchboard lets an autonomous agent answer and place real phone calls
 **without** turning the phone network into an attack surface on your server,
@@ -29,7 +29,7 @@ authorized by the phone line alone.
 | T13 | Stored transcripts as a PII honeypot | Retention purge (`TRANSCRIPT_RETENTION_DAYS`, S15); DTMF/secrets/audio never stored (S7); off-box backups inherit the same minimized data |
 | T14 | Duplicate execution on crash/retry (two pizza orders) | Outbound idempotency keys, `processed_actions` dedupe (S13) |
 
-## Why the spoken PIN was removed (v0.2)
+## Why there is no spoken PIN
 A password spoken on a call is transcribed by STT, passes through the relay
 WebSocket and the model's context, and is stored in the transcript — a static
 secret that can be misheard, overheard, leaked via logs, or replayed forever.

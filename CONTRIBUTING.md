@@ -7,8 +7,8 @@ Thanks for helping build the open voice-agent harness!
    follows. The spec is the source of truth — implementations conform to it,
    not the other way around.
 2. **Security invariants are sacred.** Any PR touching identity, policy,
-   telephony, or tool exposure must keep invariants **S1–S8**
-   (`docs/spec.md §8`) green and include/extend their conformance tests.
+   telephony, or tool exposure must keep invariants **S1–S15**
+   (`docs/spec.md §9`) green and include/extend their conformance tests.
 3. **Compliance rails stay on.** PRs that weaken AI disclosure, consent
    checks, quiet hours, or emergency-number blocking will be declined.
 4. **One owner per instance** is a design principle, not a missing feature.
