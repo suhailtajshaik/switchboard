@@ -80,7 +80,7 @@ call time).
 | `add_contact` (sensitive) / `lookup_contact` | ✅ | ✅ (lookup) | ❌ |
 | `take_message(caller, summary, urgency)` | ✅ | ✅ | ✅ *(only tool)* |
 | `web_search(query)` | ✅ | opt-in | ❌ |
-| `web_fetch(url)` (egress-filtered, §10) | ✅ | opt-in | ❌ |
+| `web_fetch(url)` (egress-filtered, S10) | ✅ | opt-in | ❌ |
 
 - **No general shell or arbitrary file-write/exec tool is exposed by
   default** (S8). The agent's capabilities are the structured tools above.
@@ -94,8 +94,8 @@ call time).
 | Route | Method | Behavior |
 |---|---|---|
 | `/health` | GET | `{"ok": true, "version": …}` |
-| `/twilio/voice` | POST | Inbound call webhook → S2 verify → role lookup → mint a **single-use relay nonce** (§S9) → TwiML `<Connect><ConversationRelay url="wss://$PUBLIC_DOMAIN/twilio/relay?token={nonce}">` with role-appropriate greeting and a natural TTS voice. Consult the current ConversationRelay TwiML reference for attributes. |
-| `/twilio/relay` | WS | Validate `token` (§S9) before accepting. Then run the ConversationRelay protocol: handle `setup`/`prompt`/`interrupt`, stream brain output as `text` tokens, end session to hang up. Latency budget §7. |
+| `/twilio/voice` | POST | Inbound call webhook → S2 verify → role lookup → mint a **single-use relay nonce** (S9) → TwiML `<Connect><ConversationRelay url="wss://$PUBLIC_DOMAIN/twilio/relay?token={nonce}">` with role-appropriate greeting and a natural TTS voice. Consult the current ConversationRelay TwiML reference for attributes. |
+| `/twilio/relay` | WS | Validate `token` (S9) before accepting. Then run the ConversationRelay protocol: handle `setup`/`prompt`/`interrupt`, stream brain output as `text` tokens, end session to hang up. Latency budget §7. |
 | `/twilio/sms` | POST | S2 verify → same role routing as voice. |
 | `/twilio/amd` | POST | S2 verify → inject `AnsweredBy` into the live call session. |
 | `/twilio/status` | POST | S2 verify → update `calls`. |

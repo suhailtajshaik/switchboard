@@ -1,12 +1,13 @@
 # Conformance tests
 
-Tests mirror `docs/spec.md §10` and run **without live provider
+Tests mirror `docs/spec.md §11` and run **without live provider
 credentials**: telephony is exercised via recorded webhook fixtures (signed
 and forged variants) and a fake ConversationRelay WebSocket peer; the brain
 is faked with a scripted adapter.
 
-Required suites: identity/roles · PIN gate · quiet hours · escalation state
-machine (incl. restart recovery) · webhook signatures · caps · **S1
+Required suites: identity/roles · sensitive-action gate (S3) · quiet hours ·
+escalation state machine (incl. restart recovery) · webhook signatures ·
+caps · **S1
 prompt-injection corpus** (stranger inputs that must produce zero tool
 calls). PRs touching identity/policy/telephony must extend these.
 

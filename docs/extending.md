@@ -47,7 +47,8 @@ custom tools and confines file/exec built-ins to the workspace
 
 ## 4. Tools
 Native tools register with a name, JSON schema, required role, and
-`sensitive: bool` (PIN gate). External tools SHOULD come in via **MCP**
+`sensitive: bool` (out-of-band approval gate, S3). External tools SHOULD
+come in via **MCP**
 (Model Context Protocol) servers so they're portable across harnesses —
 attach MCP servers to the brain adapter and list their tools in the
 registry with role mappings.

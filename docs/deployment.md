@@ -29,7 +29,7 @@ on your own server (real webhook signatures, real relay WS):
   `/opt/switchboard/app`.
 - Option B — generate: run a coding agent (e.g. `claude` from Claude Code) in
   `/opt/switchboard/app` with `docs/spec.md` + `docs/configuration.md` as the
-  instruction, then run the conformance tests (spec §10) until green.
+  instruction, then run the conformance tests (spec §11) until green.
 
 ## Run
 ```bash
@@ -39,8 +39,8 @@ sudo systemctl enable --now switchboard
 journalctl -u switchboard -f
 curl https://assistant.yourdomain.com/health
 ```
-Then wire Twilio webhooks (`docs/telephony-twilio.md §3`) and run the spec §10
-manual checklist.
+Then wire Twilio webhooks (`docs/telephony-twilio.md §3`) and run the spec §11
+conformance checklist.
 
 ## Operations
 - **Logs:** `journalctl -u switchboard` (structured JSON).

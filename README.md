@@ -27,7 +27,7 @@ first-class channel with the things phones uniquely require:
 | **AMD branching** | Answering-machine detection: human → converse; voicemail → leave a ≤20 s message after the beep; IVR/bot → switch to literal, menu-friendly speech. |
 | **Escalation engine** | Reminders that notify → wait → **call you** → retry until you *say* you're up. |
 | **Consent & compliance rails** | First-sentence AI disclosure, per-contact consent registry, quiet hours, emergency-number blocks, no audio recording. Hard-coded, not vibes. |
-| **Anti-spoofing** | Caller ID is treated as *hint, not proof*: spoken PIN gates sensitive actions; an un-spoofable channel (Telegram) is the root of trust. |
+| **Anti-spoofing** | Caller ID is treated as *hint, not proof*: sensitive actions require out-of-band approval on an un-spoofable channel (Telegram) — the root of trust. |
 
 ## What it is *not*
 
@@ -72,14 +72,14 @@ sudo systemctl enable --now switchboard
 
 Full walkthroughs: [`docs/deployment.md`](docs/deployment.md) ·
 [`docs/telephony-twilio.md`](docs/telephony-twilio.md) · test checklist in
-[`docs/spec.md §10`](docs/spec.md).
+[`docs/spec.md §11`](docs/spec.md).
 
 ## Documentation
 
 | Doc | Contents |
 |---|---|
 | [`docs/architecture.md`](docs/architecture.md) | Layers, call lifecycle, role model |
-| [`docs/spec.md`](docs/spec.md) | **The normative spec**: interfaces, endpoints, DB schema, security invariants S1–S8, conformance tests |
+| [`docs/spec.md`](docs/spec.md) | **The normative spec**: interfaces, endpoints, DB schema, security invariants S1–S15, conformance tests |
 | [`docs/configuration.md`](docs/configuration.md) | Every setting, defaults, validation |
 | [`docs/deployment.md`](docs/deployment.md) | VPS install, systemd, Caddy, backups |
 | [`docs/telephony-twilio.md`](docs/telephony-twilio.md) | ConversationRelay, AMD, A2P 10DLC, webhooks |
@@ -115,7 +115,7 @@ Full walkthroughs: [`docs/deployment.md`](docs/deployment.md) ·
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`SECURITY.md`](SECURITY.md).
 PRs that touch identity, policy, or telephony **must** include conformance
-tests for the relevant invariants in `docs/spec.md §8`.
+tests for the relevant invariants in `docs/spec.md §9`.
 
 ## License & disclaimer
 

@@ -4,6 +4,20 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) ·
 Versioning: [SemVer](https://semver.org).
 
 ## [Unreleased]
+### Fixed
+- Stale pre-v0.3 cross-references: conformance tests are spec **§11** (was
+  cited as "§10" in README, deployment guide and tests README); security
+  invariants are **S1–S15 in spec §9** (CONTRIBUTING and README said
+  "S1–S8"/"§8"); v0.1 spoken-PIN wording replaced with the sensitive-action
+  gate (tests README, personas doc, README anti-spoofing row, SECURITY.md,
+  extending.md); persona-pack table updated to v2 with out-of-band approval
+  cooperation; `store.py` docstring §7→§8; architecture-diagram escalation
+  box mislabeled "S6"; spec invariant-reference typos (`§10`→`S10` egress
+  filter, `§S9`→`S9`).
+### Added
+- `CLAUDE.md` (agent guidance: spec-first workflow, VPS/Raspberry Pi
+  install, human-action checklist) and `docs/setup-checklist.md`
+  (end-to-end operator setup with human / browser-agent / server tags).
 
 ## [0.3.0-alpha] - 2026-06-12
 ### Operations & reliability pass (spec v0.3 — capabilities deferred by design)

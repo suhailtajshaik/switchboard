@@ -1,4 +1,4 @@
-"""SQLite persistence (spec §7). Stdlib sqlite3; one writer process."""
+"""SQLite persistence (spec §8). Stdlib sqlite3; one writer process."""
 from __future__ import annotations
 
 import json
