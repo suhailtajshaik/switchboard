@@ -1,4 +1,4 @@
-"""Fail-fast configuration loading (spec §1, v0.2)."""
+"""Fail-fast configuration loading (spec §1)."""
 from __future__ import annotations
 
 import re
@@ -13,8 +13,8 @@ class ConfigError(Exception):
     """Raised at boot when configuration is missing or invalid."""
 
 
-# NOTE (v0.2): VOICE_PIN removed. Sensitive actions use out-of-band approval
-# on the root-of-trust channel (spec §2.1, S3), not a spoken secret.
+# NOTE: deliberately no VOICE_PIN — sensitive actions use out-of-band approval
+# on the root-of-trust channel (spec §2.1, S3), never a spoken secret.
 _REQUIRED = [
     "ANTHROPIC_API_KEY", "TELEGRAM_BOT_TOKEN", "TELEGRAM_OWNER_CHAT_ID",
     "TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_NUMBER",
@@ -58,7 +58,7 @@ class Config:
     daily_inbound_minutes: int = 120
     brain_response_timeout_seconds: int = 12
     relay_nonce_ttl_seconds: int = 120
-    # operations (v0.3)
+    # operations
     daily_max_spend_usd: float = 5.0
     transcript_retention_days: int = 90
     dry_run: bool = False
@@ -182,7 +182,7 @@ def from_env(env: Mapping[str, str]) -> Config:
         tts_provider=env.get("TTS_PROVIDER", ""),
         tts_voice=env.get("TTS_VOICE", ""),
         default_region=region,
-        blocked_extra=tuple(filter(None, (s.strip() for s in env.get("BLOCKED_PREFIXES", env.get("BLOCKED_NUMBERS", "")).split(",")))),
+        blocked_extra=tuple(filter(None, (s.strip() for s in env.get("BLOCKED_PREFIXES", "").split(",")))),
     )
     if errs:
         raise ConfigError("Invalid configuration:\n  - " + "\n  - ".join(errs))

@@ -46,8 +46,8 @@ conformance checklist.
 - **Logs:** `journalctl -u switchboard` (structured JSON).
 - **Backups:** install the provided script —
   `crontab -e` → `17 3 * * * /opt/switchboard/app/scripts/backup.sh >> /var/log/switchboard-backup.log 2>&1`.
-  Set `BACKUP_REMOTE` (an rclone remote) for off-box copies. Details:
-  `docs/operations.md §6`.
+  Set `BACKUP_REMOTE` on the cron line (an rclone remote) for off-box
+  copies. Details: `docs/operations.md §6`.
 - **Watchdog:** once `main.py` implements `sd_notify` (spec §7), uncomment
   `Type=notify` / `WatchdogSec=60` in the unit to catch hung processes.
 - **First run:** set `DRY_RUN=true`, rehearse the full loop (reminder →

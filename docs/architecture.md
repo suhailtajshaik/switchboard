@@ -1,4 +1,4 @@
-# Architecture (v0.2)
+# Architecture
 
 ## 1. Design principles
 1. **Telephony-first.** Phone calls are streaming, interruptible,

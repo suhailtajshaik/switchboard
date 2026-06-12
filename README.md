@@ -6,9 +6,11 @@
 
 *(Working title — verify name availability before publishing.)*
 
-**Status:** `0.3.0-alpha` — spec, personas, deploy tooling and docs are stable;
-the reference implementation is generated and tested against
-[`docs/spec.md`](docs/spec.md). Expect breaking changes before `1.0`.
+**Status:** `0.1.0-alpha` — first version, nothing released or deployed yet.
+Spec, personas, deploy tooling and docs are complete; the reference
+implementation is partial — pure core logic ships in `src/`, the remaining
+wiring is generated against [`docs/spec.md`](docs/spec.md) (see
+[`src/README.md`](src/README.md)). Expect breaking changes before `1.0`.
 
 ---
 

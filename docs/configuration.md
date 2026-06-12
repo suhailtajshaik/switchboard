@@ -1,4 +1,4 @@
-# Configuration reference (v0.3)
+# Configuration reference
 
 All settings are environment variables (see `.env.example`). Required unless a
 default is shown. The process fails fast at boot on invalid values and refuses
@@ -45,10 +45,23 @@ to start if webhook signature validation is disabled.
 | `DRY_RUN` | bool | false | Side-effecting adapters log instead of execute; `/status` flags it (rehearsal mode) |
 | `BLOCKED_PREFIXES` | CSV | (built-in emergency + premium) | Numbers/prefixes `make_call` must refuse (S4) — extend per country |
 
-**Removed in v0.2:** `VOICE_PIN`. A spoken password is transcribed and stored;
-sensitive actions now use out-of-band approval (S3). If migrating from v0.1,
-delete `VOICE_PIN` and set `APPROVAL_TIMEOUT_MINUTES` (and optionally
-`DTMF_PIN`).
+## Voice / locale (optional)
+| Variable | Type | Default | Meaning |
+|---|---|---|---|
+| `PERSONA_LANG` | lang code | `en` | Load `personas/<lang>/` as an overlay pack (see `docs/personas.md`) |
+| `TTS_PROVIDER` / `TTS_VOICE` | string | provider default | TTS provider/voice hint the telephony adapter puts in its TwiML |
+| `DEFAULT_REGION` | ISO country | `US` | Region used to normalize phone numbers given without a `+` prefix |
+
+## Script-only
+| Variable | Used by | Meaning |
+|---|---|---|
+| `BACKUP_REMOTE` | `scripts/backup.sh` | Optional rclone remote (e.g. `b2:bucket/switchboard`) for off-box backup sync. Set it on the backup **cron line** — the cron job does not read `.env` |
+
+**Deliberately absent:** `VOICE_PIN`. A spoken password is transcribed and
+stored — a static, replayable, overhearable secret — so it is not an auth
+mechanism here (spec §2.1 forbids it). Sensitive actions use out-of-band
+approval (S3); `DTMF_PIN` is an optional convenience second factor, never
+the sole gate.
 
 **Validation rules:** phone vars parse to E.164; `TELEGRAM_OWNER_CHAT_ID`
 numeric; tz must exist; caps ≥1; the process refuses any "disable signature

@@ -1,4 +1,4 @@
-# Operations guide (v0.3)
+# Operations guide
 
 Day-2 concerns: staying alive, staying cheap, and stopping fast. Normative
 requirements live in `docs/spec.md`; this is the operator-facing detail.

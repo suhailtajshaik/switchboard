@@ -1,4 +1,4 @@
-# Call-behavior eval harness (v0.3)
+# Call-behavior eval harness
 
 Unit tests prove the policy engine; they don't prove the *agent* survives a
 messy phone call. Evals do: scripted "counterpart" scenarios are run against

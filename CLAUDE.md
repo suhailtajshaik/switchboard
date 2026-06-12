@@ -21,9 +21,9 @@ deployment host) and proven with the conformance tests. **Read
 `src/README.md` first**: it lists exactly what exists, what's missing, and
 the expected final layout.
 
-Version `0.3.0-alpha`. No CI yet (`.github/workflows/` is empty). The spec
-renumbers sections across versions — if any doc's "§N" pointer disagrees
-with `docs/spec.md`'s actual headings, **the spec wins** (v0.3: security
+Version `0.1.0-alpha` — first version; nothing released or deployed yet.
+No CI yet (`.github/workflows/` is empty). If a doc's "§N" pointer ever
+disagrees with `docs/spec.md`'s actual headings, **the spec wins** (security
 invariants S1–S15 in §9, conformance tests in §11). `CONTRIBUTING.md`'s
 `pip install -r src/requirements*.txt` fails until those files are
 generated (see Commands below).
@@ -66,8 +66,8 @@ relay WS (token) ─▶  Identity & Policy ─▶ Brain (role-filtered ToolSet)
   hint, **never** authentication.
 - **Sensitive actions** requested over phone/SMS are held for **out-of-band
   approval** on the owner's Telegram (expires, default 5 min). No secret is
-  ever spoken or transcribed — `VOICE_PIN` was removed in v0.2; do not
-  reintroduce voice-spoken auth.
+  ever spoken or transcribed — there is deliberately no `VOICE_PIN`; never
+  introduce voice-spoken auth (spec §2.1 forbids it).
 - **Policy engine is the only path to side-effecting tools** (`core/policy.py`:
   capability table, `ApprovalGate`, `KillSwitch`, `spend_check`,
   `make_action_key`). The brain only ever *sees* tools its role allows. The

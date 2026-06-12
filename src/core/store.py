@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS messages(
   id INTEGER PRIMARY KEY, session_id TEXT, direction TEXT, content TEXT,
   ts TEXT DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS calls(
-  id INTEGER PRIMARY KEY, sid TEXT, direction TEXT, peer TEXT,
+  id INTEGER PRIMARY KEY, sid TEXT UNIQUE, direction TEXT, peer TEXT,
   answered_by TEXT, started_at TEXT, ended_at TEXT, outcome TEXT,
   transcript TEXT);
 CREATE TABLE IF NOT EXISTS reminders(
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS reminders(
   urgency TEXT NOT NULL, state TEXT NOT NULL DEFAULT 'PENDING',
   attempts INTEGER NOT NULL DEFAULT 0, escalation_json TEXT);
 CREATE TABLE IF NOT EXISTS counters(
-  day TEXT NOT NULL, name TEXT NOT NULL, value INTEGER NOT NULL DEFAULT 0,
+  day TEXT NOT NULL, name TEXT NOT NULL, value REAL NOT NULL DEFAULT 0,
   PRIMARY KEY(day, name));
 """
 
@@ -37,19 +37,29 @@ class Store:
         self.db.row_factory = sqlite3.Row
         self.db.executescript(_SCHEMA)
 
-    # -- counters (S5) -------------------------------------------------------
-    def counter(self, name: str, day: str | None = None) -> int:
+    # -- counters (S5, operations §2) ----------------------------------------
+    def counter(self, name: str, day: str | None = None) -> float:
         day = day or date.today().isoformat()
         row = self.db.execute(
             "SELECT value FROM counters WHERE day=? AND name=?", (day, name)
         ).fetchone()
-        return row["value"] if row else 0
+        return row["value"] if row else 0.0
 
-    def incr(self, name: str, day: str | None = None) -> int:
+    def incr(self, name: str, day: str | None = None) -> float:
         day = day or date.today().isoformat()
         self.db.execute(
             "INSERT INTO counters(day,name,value) VALUES(?,?,1) "
             "ON CONFLICT(day,name) DO UPDATE SET value=value+1", (day, name))
+        self.db.commit()
+        return self.counter(name, day)
+
+    def add(self, name: str, amount: float, day: str | None = None) -> float:
+        """Accumulate a fractional bucket (e.g. spend_usd_llm)."""
+        day = day or date.today().isoformat()
+        self.db.execute(
+            "INSERT INTO counters(day,name,value) VALUES(?,?,?) "
+            "ON CONFLICT(day,name) DO UPDATE SET value=value+excluded.value",
+            (day, name, amount))
         self.db.commit()
         return self.counter(name, day)
 
