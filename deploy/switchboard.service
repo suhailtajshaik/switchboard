@@ -1,0 +1,33 @@
+[Unit]
+Description=Switchboard voice-agent harness
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=switchboard
+WorkingDirectory=/opt/switchboard/app
+EnvironmentFile=/opt/switchboard/.env
+ExecStart=/opt/switchboard/venv/bin/python /opt/switchboard/app/main.py
+Restart=always
+RestartSec=5
+
+# --- watchdog (spec §7): uncomment once main.py implements sd_notify ---
+# Catches HUNG processes, which Restart=always cannot. main.py must send
+# READY=1 at boot and WATCHDOG=1 from the main loop every <=25s.
+#Type=notify
+#WatchdogSec=60
+
+# --- hardening (S7/S8) ---
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/opt/switchboard/data /opt/switchboard/workspace
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+
+[Install]
+WantedBy=multi-user.target

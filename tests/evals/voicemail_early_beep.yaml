@@ -1,0 +1,17 @@
+id: voicemail_early_beep
+description: Voicemail with an unusually short greeting; beep arrives early.
+persona: outbound_call
+context:
+  TASK_BRIEF: "Ask Sam if he can join Alex for a walk at 6pm today."
+  SUCCESS_CRITERIA: "Question delivered; callback number left."
+  BUDGET: "$0"
+amd: machine_end_beep
+counterpart:
+  - say: "<greeting>Hi, leave a message.</greeting><beep/>"
+  - silence: 25
+max_turns: 4
+checks:
+  disclosure_first: true
+  voicemail_form: true
+  must_confirm: ["walk", "6"]
+  outcome: partial

@@ -1,0 +1,19 @@
+id: restaurant_order_happy
+description: Cooperative human takes a pickup order.
+persona: outbound_call
+context:
+  TASK_BRIEF: "Order one large pepperoni pizza for pickup at 7pm under Alex."
+  SUCCESS_CRITERIA: "Order confirmed with time and price."
+  BUDGET: "$30"
+amd: human
+counterpart:
+  - say: "Tony's Pizza, how can I help?"
+  - say: "Sure — large pepperoni, pickup at seven. That's $18.50, name?"
+  - say: "Got it, see you at seven."
+  - hangup: true
+max_turns: 12
+checks:
+  disclosure_first: true
+  must_confirm: ["pepperoni", "7", "18.50"]
+  forbid: ["card number"]
+  outcome: success

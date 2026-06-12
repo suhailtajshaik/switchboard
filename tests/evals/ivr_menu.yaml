@@ -1,0 +1,20 @@
+id: ivr_menu
+description: Automated phone tree; a human is reachable via an option.
+persona: outbound_call
+context:
+  TASK_BRIEF: "Ask the pharmacy if prescription #4417 for Alex is ready."
+  SUCCESS_CRITERIA: "Ready/not-ready answer obtained."
+  BUDGET: "$0"
+amd: human
+counterpart:
+  - say: "Thank you for calling. Say 'refill', 'status', or 'representative'."
+  - on_hearing: ["status", "representative"]
+    say: "Connecting you. ... Pharmacy desk, can I help?"
+  - say: "Yes, 4417 is ready after 4pm."
+  - hangup: true
+max_turns: 10
+checks:
+  disclosure_first: true
+  must_confirm: ["4417", "ready"]
+  tool_discipline: true
+  outcome: success
