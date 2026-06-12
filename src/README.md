@@ -32,7 +32,8 @@ conformance tests in §11 until green):
   metadata IPs, redirect cap, DNS-rebinding) + untrusted-content handling.
 - **S12** idempotent webhook dedupe (`processed_events`).
 - **§7** holding-phrase emission, token streaming, brain-response timeout +
-  graceful fallback, non-blocking event loop (SQLite WAL).
+  graceful fallback, non-blocking event loop (the store already enables
+  SQLite WAL).
 - Persistence for `pending_approvals`, `counters` (incl. inbound minutes and
   `spend_usd`), the contacts consent-provenance and calls cost/task columns
   (spec §8), `processed_actions` (S13), `runtime_flags` (S14), the

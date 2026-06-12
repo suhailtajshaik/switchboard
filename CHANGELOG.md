@@ -4,6 +4,22 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) ·
 Versioning: [SemVer](https://semver.org).
 
 ## [Unreleased]
+### Added
+- Conformance test suite for the pure core (spec §11 unit categories, 128
+  tests): phone normalization, role resolution, config fail-fast (S2
+  no-skip flag), policy engine (S1 injection corpus, S3 approval gate incl.
+  expiry, quiet hours across midnight, S4 number blocking, §5 pre-flight,
+  S5 cap edges 79/80/100%, S11 inbound limits, spend-budget edges, S13
+  idempotency keys, S14 kill switch incl. restart restore), escalation FSM
+  incl. restart recovery, store (UNIQUE sid, fractional spend buckets, WAL),
+  and Twilio signature validation (valid/forged/replayed, cross-checked
+  against the official SDK).
+- Pinned `src/requirements.txt` and `src/requirements-dev.txt`.
+- GitHub Actions CI (`.github/workflows/ci.yml`): ruff + pytest on pushes
+  to master/development and on all PRs.
+
+### Fixed
+- `Store` now enables SQLite WAL mode for file databases (spec §1).
 
 ## [0.1.0-alpha] - 2026-06-12
 First version — nothing earlier was released or deployed.

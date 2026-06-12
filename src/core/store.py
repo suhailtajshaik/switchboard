@@ -35,6 +35,7 @@ class Store:
     def __init__(self, path: str | Path = ":memory:") -> None:
         self.db = sqlite3.connect(str(path))
         self.db.row_factory = sqlite3.Row
+        self.db.execute("PRAGMA journal_mode=WAL")  # spec §1; no-op in :memory:
         self.db.executescript(_SCHEMA)
 
     # -- counters (S5, operations §2) ----------------------------------------

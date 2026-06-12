@@ -13,34 +13,33 @@ process, one owner per instance.
 **Spec-first, deliberately partial.** `docs/spec.md` is normative — code
 conforms to it, never the reverse. `src/` today contains only the pure,
 unit-testable core (`core/`: config, identity, policy, phones, personas,
-escalation, store; `adapters/twilio_signature.py`). Everything else —
-`main.py`, the FastAPI gateway + relay WS, the Telegram/Twilio-REST/brain
-adapters, `src/requirements.txt` (pinned), the pytest conformance suites, the
-eval runner — is meant to be **generated against the spec** (typically on the
-deployment host) and proven with the conformance tests. **Read
+escalation, store; `adapters/twilio_signature.py`), with unit conformance
+suites in `tests/` (run in CI). Everything else — `main.py`, the FastAPI
+gateway + relay WS, the Telegram/Twilio-REST/brain adapters, the
+integration fixtures (fake relay WS peer, recorded signed webhooks), the
+eval runner — is meant to be **generated against the spec** (typically on
+the deployment host) and proven with the conformance tests. **Read
 `src/README.md` first**: it lists exactly what exists, what's missing, and
 the expected final layout.
 
 Version `0.1.0-alpha` — first version; nothing released or deployed yet.
-No CI yet (`.github/workflows/` is empty). If a doc's "§N" pointer ever
-disagrees with `docs/spec.md`'s actual headings, **the spec wins** (security
-invariants S1–S15 in §9, conformance tests in §11). `CONTRIBUTING.md`'s
-`pip install -r src/requirements*.txt` fails until those files are
-generated (see Commands below).
+CI (`.github/workflows/ci.yml`) runs `ruff check src tests` + `pytest
+tests/` on pushes to master/development and on PRs. If a doc's "§N" pointer
+ever disagrees with `docs/spec.md`'s actual headings, **the spec wins**
+(security invariants S1–S15 in §9, conformance tests in §11).
 
 ## Commands
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
-pip install -r src/requirements.txt -r src/requirements-dev.txt
-# ^ these files don't exist yet — creating them (pinned) is part of completing
-#   src/. Until then the runtime dep list lives in scripts/setup.sh step 7:
-#   fastapi uvicorn[standard] websockets python-telegram-bot twilio
-#   apscheduler httpx claude-agent-sdk
+pip install -r src/requirements-dev.txt      # pytest + ruff — all the core
+                                             # suite needs (it is stdlib-only)
+pip install -r src/requirements.txt          # runtime deps (pinned); only
+                                             # needed for adapters/gateway work
 
 pytest tests/                                # all conformance tests
 pytest tests/test_policy.py -k quiet_hours   # one file / one test
-ruff check . && ruff format .                # lint + format
+ruff check src tests                         # lint (what CI runs)
 ```
 
 Tests run **without any live credentials**: telephony is exercised via
