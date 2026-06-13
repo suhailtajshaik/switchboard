@@ -13,7 +13,8 @@ security reports as top priority.
 ## Scope of interest (examples)
 - Bypassing role isolation (a STRANGER reaching any tool) — invariant **S1**
 - Webhook signature validation bypass — **S2**
-- PIN gate bypass / caller-ID-spoofing escalation — **S3**
+- Sensitive-action approval bypass (out-of-band gate) / caller-ID-spoofing
+  escalation — **S3**
 - Prompt-injection paths from untrusted callers to actions — **S1/S6**
 - Cost-runaway or cap-bypass vectors — **S5**
 

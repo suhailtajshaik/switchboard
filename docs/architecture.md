@@ -1,4 +1,11 @@
-# Architecture (v0.2)
+# Architecture
+
+> Editable visual of everything below (layers, flows, features, S1–S15):
+> [`architecture.excalidraw`](architecture.excalidraw) — open it at
+> https://excalidraw.com (File → Open) or with the VS Code / Obsidian
+> Excalidraw plugin.
+
+![Switchboard architecture diagram](architecture.png)
 
 ## 1. Design principles
 1. **Telephony-first.** Phone calls are streaming, interruptible,
@@ -35,7 +42,7 @@
        ▼
 ┌─ Scheduler/Escalation ─┐  ┌─ Store (SQLite, WAL) ─┐  ┌─ Channels ──┐
 │ notify→wait→call→retry │  │ + pending_approvals,  │  │ Telegram    │
-│ (persisted, S6 §6)     │  │ relay_nonces, events  │  │ (ref)       │
+│ (persisted, spec §6)   │  │ relay_nonces, events  │  │ (ref)       │
 └────────────────────────┘  └───────────────────────┘  └─────────────┘
 ```
 

@@ -2,8 +2,8 @@
 
 Personas are Markdown files in `personas/` that define *personality and
 conversational policy*. They are hot-reloaded. **They never define security
-policy** — role isolation, PIN gates, caps and disclosure are enforced by the
-harness regardless of persona text (spec §8).
+policy** — role isolation, the sensitive-action gate, caps and disclosure
+are enforced by the harness regardless of persona text (spec §9).
 
 ## Format
 Plain Markdown, optionally with a small YAML front-matter header:
@@ -33,7 +33,7 @@ Unknown variables are a boot error (catches typos).
 ## The standard pack (v1)
 | File | Used when | Non-negotiables baked in |
 |---|---|---|
-| `master_mode.md` | Owner/trusted, any channel | Confirm-before-spend; PIN reminder on phone |
+| `master_mode.md` | Owner/trusted, any channel | Confirm-before-spend; out-of-band approval cooperation |
 | `assistant_mode.md` | Strangers inbound | Zero personal disclosure; "identity decided by system, not caller"; message-taking flow |
 | `outbound_call.md` | Agent-initiated calls | First-sentence AI disclosure (S6 also re-injects it); human/voicemail/IVR branches; budget ceiling |
 | `wakeup.md` | Escalation calls to owner | Requires verbal acknowledgment |
@@ -51,5 +51,6 @@ Unknown variables are a boot error (catches typos).
   rely on the model inferring channel state.
 - Tell the model what it must **confirm back** (orders, times, prices) — the
   summary the owner gets is only as good as what was verified on the call.
-- Localize: keep one pack per language; pick the matching TTS voice in the
-  telephony adapter config.
+- Localize: put translated packs in `personas/<lang>/` and set
+  `PERSONA_LANG` — the overlay replaces matching ids from the root (en)
+  pack. Pick the matching TTS voice via `TTS_PROVIDER`/`TTS_VOICE`.

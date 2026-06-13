@@ -1,0 +1,4 @@
+# Dev / test tooling. The core conformance suite is stdlib-only by design,
+# so these (plus Python >= 3.12) are all CI needs.
+pytest==9.0.3
+ruff==0.15.17

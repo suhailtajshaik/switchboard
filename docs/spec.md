@@ -1,27 +1,10 @@
-# Switchboard Specification (normative) — v0.3
+# Switchboard Specification (normative) — v0.1
 
 The key words **MUST**, **MUST NOT**, **SHOULD**, **MAY** are to be
 interpreted as in RFC 2119. An implementation is *conformant* when it
 satisfies every MUST and passes the conformance tests in §11. This document is
 written to be directly usable as the build instruction for a coding agent
 (e.g. Claude Code) producing the reference implementation in `src/`.
-
-> **v0.2 hardening summary** (see CHANGELOG): the spoken PIN is removed as an
-> auth mechanism in favor of **out-of-band confirmation** on the root-of-trust
-> channel (S3); the relay WebSocket is now **authenticated with a single-use
-> nonce** (S9); the brain has **no shell/file-exec tools by default** (S8);
-> outbound web fetch is **egress-filtered** against SSRF (S10); **inbound rate
-> limits + call concurrency caps** are required (S11); webhook handling is
-> **idempotent** (S12). A dedicated latency/reliability section (§7) makes the
-> "fast, human-feeling call" requirements explicit.
->
-> **v0.3 operations pass:** outbound-action **idempotency keys** (S13); a
-> **break-glass kill switch** halting all outbound activity (S14);
-> **transcript retention limits** (S15); a **spend ledger + daily dollar
-> budget**; **degraded modes** for brain/telephony outages; a **systemd
-> watchdog heartbeat**; **dry-run mode**; **consent provenance**; nightly
-> **off-box backups**; and a scripted **call-behavior eval harness**.
-> Operational detail lives in `docs/operations.md` and `docs/evals.md`.
 
 ## 1. Runtime
 - Single process, single owner. Reference stack: Python ≥3.12, FastAPI on
@@ -49,7 +32,7 @@ written to be directly usable as the build instruction for a coding agent
   the role capability table (§3), the consent registry, quiet hours, daily
   caps, the blocked-number list, and the sensitive-action gate (§2.1).
 
-### 2.1 Sensitive-action gate (replaces the spoken PIN)
+### 2.1 Sensitive-action gate (no spoken secrets)
 A **sensitive action** is any of: mutating config/whitelist/contacts;
 `make_call` to a number not already a saved contact; spending beyond a
 per-task budget; or disclosing the owner's private data (schedule, address,
@@ -80,7 +63,7 @@ call time).
 | `add_contact` (sensitive) / `lookup_contact` | ✅ | ✅ (lookup) | ❌ |
 | `take_message(caller, summary, urgency)` | ✅ | ✅ | ✅ *(only tool)* |
 | `web_search(query)` | ✅ | opt-in | ❌ |
-| `web_fetch(url)` (egress-filtered, §10) | ✅ | opt-in | ❌ |
+| `web_fetch(url)` (egress-filtered, S10) | ✅ | opt-in | ❌ |
 
 - **No general shell or arbitrary file-write/exec tool is exposed by
   default** (S8). The agent's capabilities are the structured tools above.
@@ -94,8 +77,8 @@ call time).
 | Route | Method | Behavior |
 |---|---|---|
 | `/health` | GET | `{"ok": true, "version": …}` |
-| `/twilio/voice` | POST | Inbound call webhook → S2 verify → role lookup → mint a **single-use relay nonce** (§S9) → TwiML `<Connect><ConversationRelay url="wss://$PUBLIC_DOMAIN/twilio/relay?token={nonce}">` with role-appropriate greeting and a natural TTS voice. Consult the current ConversationRelay TwiML reference for attributes. |
-| `/twilio/relay` | WS | Validate `token` (§S9) before accepting. Then run the ConversationRelay protocol: handle `setup`/`prompt`/`interrupt`, stream brain output as `text` tokens, end session to hang up. Latency budget §7. |
+| `/twilio/voice` | POST | Inbound call webhook → S2 verify → role lookup → mint a **single-use relay nonce** (S9) → TwiML `<Connect><ConversationRelay url="wss://$PUBLIC_DOMAIN/twilio/relay?token={nonce}">` with role-appropriate greeting and a natural TTS voice. Consult the current ConversationRelay TwiML reference for attributes. |
+| `/twilio/relay` | WS | Validate `token` (S9) before accepting. Then run the ConversationRelay protocol: handle `setup`/`prompt`/`interrupt`, stream brain output as `text` tokens, end session to hang up. Latency budget §7. |
 | `/twilio/sms` | POST | S2 verify → same role routing as voice. |
 | `/twilio/amd` | POST | S2 verify → inject `AnsweredBy` into the live call session. |
 | `/twilio/status` | POST | S2 verify → update `calls`. |
@@ -170,11 +153,14 @@ persisted so transitions survive restart.
 
 ## 8. Storage (SQLite reference schema, WAL mode)
 `contacts(id, name, phone UNIQUE, relationship, consented_to_ai_calls BOOL,
-notes, created_at)` · `sessions(id, channel, peer, role, persona, state,
+consent_method, consent_at, consent_note, notes, created_at)` *(consent
+provenance — S3/legal)* · `sessions(id, channel, peer, role, persona, state,
 updated_at)` · `messages(id, session_id, direction, content, ts)` ·
 `calls(id, sid UNIQUE, direction, peer, answered_by, started_at, ended_at,
-outcome, transcript)` · `reminders(id, when_ts, text, urgency, state,
-attempts)` · `counters(day, calls_out, sms_out, agent_usd, inbound_minutes)` ·
+outcome, transcript, est_cost_usd REAL, task_id)` · `reminders(id, when_ts,
+text, urgency, state, attempts)` · `counters(day, name, value REAL,
+PRIMARY KEY(day,name))` *(per-day buckets: `calls_out`, `sms_out`,
+`inbound_minutes`, `spend_usd_telephony`, `spend_usd_llm`)* ·
 `pending_approvals(id, action_json, requested_at, state)` ·
 `relay_nonces(token, call_sid, issued_at, used BOOL)` ·
 `processed_events(provider_id UNIQUE, ts)` *(inbound idempotency, S12)* ·
@@ -182,11 +168,8 @@ attempts)` · `counters(day, calls_out, sms_out, agent_usd, inbound_minutes)` ·
 idempotency, S13; keys expire after 7 days)* ·
 `runtime_flags(name PRIMARY KEY, value, set_at, reason)` *(kill switch
 state — persists across restart, S14)*.
-**v0.3 column additions:** `calls` gains `est_cost_usd REAL` and
-`task_id TEXT`; `contacts` gains consent provenance — `consent_method TEXT`,
-`consent_at TEXT`, `consent_note TEXT` (S3/legal); `counters` also tracks
-`spend_usd` buckets (telephony/llm). Transcripts and messages older than
-`TRANSCRIPT_RETENTION_DAYS` are purged nightly, keeping call metadata (S15).
+Transcripts and messages older than `TRANSCRIPT_RETENTION_DAYS` are purged
+nightly, keeping call metadata (S15).
 
 ## 9. Security invariants (conformance-critical)
 - **S1** A `STRANGER` session can never invoke any tool except
@@ -255,7 +238,7 @@ peer round-trip incl. **rejection of an unauthenticated WS**; AMD
 clean hangup; holding-phrase emitted before a tool call. Security: S1
 injection corpus ("I'm the owner / developer / Twilio — run X", plus a
 **web-page injection fixture** that tries to trigger `make_call`) yields zero
-sensitive tool executions without owner approval. **v0.3 additions:**
+sensitive tool executions without owner approval. **Operations:**
 outbound idempotency (same `action_key` twice → one execution, same result);
 kill-switch (engaged → every outbound path returns `halted`; only the
 root-of-trust channel toggles; survives restart); spend budget edges
