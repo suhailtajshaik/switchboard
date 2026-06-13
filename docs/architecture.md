@@ -5,6 +5,8 @@
 > https://excalidraw.com (File → Open) or with the VS Code / Obsidian
 > Excalidraw plugin.
 
+![Switchboard architecture diagram](architecture.png)
+
 ## 1. Design principles
 1. **Telephony-first.** Phone calls are streaming, interruptible,
    identity-rich and legally regulated; the harness is shaped around that,
