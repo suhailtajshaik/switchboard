@@ -1,5 +1,10 @@
 # Architecture
 
+> Editable visual of everything below (layers, flows, features, S1–S15):
+> [`architecture.excalidraw`](architecture.excalidraw) — open it at
+> https://excalidraw.com (File → Open) or with the VS Code / Obsidian
+> Excalidraw plugin.
+
 ## 1. Design principles
 1. **Telephony-first.** Phone calls are streaming, interruptible,
    identity-rich and legally regulated; the harness is shaped around that,
