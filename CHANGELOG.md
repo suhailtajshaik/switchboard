@@ -5,6 +5,10 @@ Versioning: [SemVer](https://semver.org).
 
 ## [Unreleased]
 ### Added
+- `docs/architecture.excalidraw` — editable one-canvas architecture
+  diagram: actors, host, process layers, data flows, call lifecycle,
+  feature list and the S1–S15 invariants (linked from
+  `docs/architecture.md`).
 - Conformance test suite for the pure core (spec §11 unit categories, 128
   tests): phone normalization, role resolution, config fail-fast (S2
   no-skip flag), policy engine (S1 injection corpus, S3 approval gate incl.

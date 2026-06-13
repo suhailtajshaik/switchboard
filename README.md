@@ -55,6 +55,12 @@ first-class channel with the things phones uniquely require:
                       └─────────────────────────┘
 ```
 
+Full visual — layers, flows, the sensitive-action approval path and security
+invariants S1–S15 (editable source:
+[`docs/architecture.excalidraw`](docs/architecture.excalidraw)):
+
+![Switchboard architecture diagram](docs/architecture.png)
+
 Every box behind the Gateway is an **adapter interface** (see
 [`docs/extending.md`](docs/extending.md)): swap Twilio for Telnyx/SIP, Telegram
 for Signal, or the Claude Agent SDK brain for another agent loop — the policy,
